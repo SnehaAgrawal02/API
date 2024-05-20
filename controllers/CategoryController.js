@@ -10,7 +10,10 @@ class CategoryController {
   static view = async (req, res) => {
     try {
       const categories = await CategoryModel.find();
-      res.status(200).json(categories);
+      res.status(200).json({
+        success : true, 
+        categories
+    });
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
