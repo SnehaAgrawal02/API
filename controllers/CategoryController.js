@@ -7,7 +7,7 @@ cloudinary.config({
   });
 
 class CategoryController {
-  static view = async (req, res) => {
+  static display = async (req, res) => {
     try {
       const categories = await CategoryModel.find();
       res.status(200).json({
@@ -39,7 +39,7 @@ class CategoryController {
       res.status(400).json({ message: err.message });
     }
   }
-  static display = async (req, res) => {
+  static view = async (req, res) => {
     const { id } = req.params;
     try {
       const category = await CategoryModel.findById(id);

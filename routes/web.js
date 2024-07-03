@@ -2,6 +2,7 @@ const express = require('express')
 const UserController = require('../controllers/UserController')
 const ProductController=require('../controllers/ProductController')
 const CategoryController = require('../controllers/CategoryController')
+const SliderController = require('../controllers/SliderController')
 const router=express.Router()
 const {CheckUserAuth}=require('../middleware/auth')
 
@@ -27,11 +28,18 @@ router.post('/product/create', ProductController.createProduct)
 
 // categoryController
 
-router.get('/getAllCategories', CategoryController.view);
+router.get('/getAllCategories', CategoryController.display);
 router.post('/insertCategory', CategoryController.insert);
-router.get('/getCategory/:id', CategoryController.display);
+router.get('/getCategory/:id', CategoryController.view);
 router.put('/updateCategory/:id', CategoryController.update);
 router.delete('/deleteCategory/:id', CategoryController.delete);
+
+//sliderController
+router.get('/slider', SliderController.display);
+router.post('/insert', SliderController.insert)
+router.get('/view', SliderController.view);
+router.post('/slider', SliderController.update);
+router.delete('/slider', SliderController.delete);
 
 module.exports=router
 

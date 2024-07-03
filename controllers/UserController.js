@@ -138,29 +138,28 @@ static updatePassword = async (req, res) => {
           const isMatch = await bcrypt.compare(oldPassword, user.password)
           //const isPasswordMatched = await userModel.comparePassword(req.body.oldPassword);
           if (!isMatch) {
-              res.status(201).json({ "status": 400, "message": "Old password is incorrect" })
+              res.status(400).json({ "status": "failed", "message": "Old password is incorrect" })
           } else {
               if (newPassword !== confirmPassword) {
-                  res.status(201)
+                  res.status(400)
                       .json({ "status": "failed", "message": "password does not match" })
               } else {
                   const salt = await bcrypt.genSalt(10)
                   const newHashPassword = await bcrypt.hash(newPassword, salt)
                   //console.log(req.user)
                   await UserModel.findByIdAndUpdate(req.user.id, { $set: { password: newHashPassword } })
-                  res.status(201)
+                  res.status(200)
                       .json({ "status": "success", "message": "Password changed succesfully" })
               }
           }
       } else {
-          res.status(201)
+          res.status(400)
               .json({ "status": "failed", "message": "All Fields are Required" })
       }
   } catch (err) {
-      res.status(201)
-          .json(err)
+      return res.status(500).json({ "status": "error", "message": error.message });
   }
-};
+}
 static getSingleUser = async (req, res) => {
   try {
       const data = await UserModel.findById(req.params.id)
@@ -174,42 +173,47 @@ static getSingleUser = async (req, res) => {
 };
 static updateProfile = async (req, res) => {
   try {
-      //console.log(req.body)
-      if (req.file) {
-          const user = await UserModel.findById(req.user.id);
-          const image_id = user.image.public_id;
-          await cloudinary.uploader.destroy(image_id);
+      // console.log(req)
+      // Check if user exists
+      const user = await UserModel.findById(req.user.id);
+      if (!user) {
+          return res.status(404).json({ "status": "error", "message": "User not found" });
+      }
 
-          const file = req.files.avatar;
-          const myimage = await cloudinary.uploader.upload(file.tempFilePath, {
-              folder: "projectAPI",
-              width: 150,
-          });
-          var data = {
-              name: req.body.name,
-              email: req.body.email,
-              avatar: {
-                  public_id: myimage.public_id,
-                  url: myimage.secure_url,
-              },
-          };
-      } else {
-          var data = {
-              name: req.body.name,
-              email: req.body.email,
+      let data = {
+          name: req.body.name,
+          email: req.body.email
+      };
+      // console.log(req.files)
+
+      if (req.files) {
+          // Destroy the old image on Cloudinary
+          if (user.image && user.image.public_id) {
+              await cloudinary.uploader.destroy(user.image.public_id);
+          }
+
+          // Upload the new image to Cloudinary
+          const file = req.files.image
+          const myimage = await cloudinary.uploader.upload(file.tempFilePath , {
+              folder: 'projectAPI'
+          })
+
+          data.image = {
+              public_id: myimage.public_id,
+              url: myimage.secure_url
           };
       }
 
-      const updateuserprofile = await UserModel.findByIdAndUpdate(
-          req.user.id,
-          data
-      );
-      res.status(200).json({
-          success: true,
-          updateuserprofile,
+      // Update user profile
+      const updateUserProfile = await UserModel.findByIdAndUpdate(req.user.id, data, { new: true });
+
+      return res.status(200).json({
+          "status": "success",
+          "updateUserProfile": updateUserProfile
       });
   } catch (error) {
-      console.log(error);
+      console.error(error);
+      return res.status(500).json({ "status": "error", "message": error.message });
   }
 };
 static getUserDetail = async (req, res) => {
