@@ -36,7 +36,7 @@ router.delete('/deleteCategory/:id', CategoryController.delete);
 
 //sliderController
 router.get('/slider', SliderController.display);
-router.post('/insert', SliderController.insert)
+router.post('/insert', SliderController.insert);
 router.get('/view', SliderController.view);
 router.post('/slider', SliderController.update);
 router.delete('/slider', SliderController.delete);
