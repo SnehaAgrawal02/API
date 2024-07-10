@@ -5,6 +5,7 @@ const CategoryController = require('../controllers/CategoryController')
 const SliderController = require('../controllers/SliderController')
 const router=express.Router()
 const {CheckUserAuth}=require('../middleware/auth')
+const PaymentController = require('../controllers/PaymentController')
 
 
 //usercontroller
@@ -40,6 +41,10 @@ router.post('/insert', SliderController.insert);
 router.get('/view', SliderController.view);
 router.post('/slider', SliderController.update);
 router.delete('/slider', SliderController.delete);
+
+//PaymentController
+router.post('/payment/process', PaymentController.processPayment)
+router.get('/stripepiKey', PaymentController.sendStripeApiKey)
 
 module.exports=router
 
