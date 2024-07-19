@@ -6,7 +6,7 @@ const SliderController = require('../controllers/SliderController')
 const router=express.Router()
 const {CheckUserAuth}=require('../middleware/auth')
 const PaymentController = require('../controllers/PaymentController')
-
+const OrderController = require('../controllers/OrderController')
 
 //usercontroller
 router.get('/getalluser',UserController.getalluser)
@@ -45,6 +45,14 @@ router.delete('/slider', SliderController.delete);
 //PaymentController
 router.post('/payment/process', PaymentController.processPayment)
 router.get('/stripeapiKey', PaymentController.sendStripeApiKey)
+
+//OrderController
+router.post('/order/create',CheckUserAuth, OrderController.newOrder)
+router.get('/order/getSingleOrder/:id',CheckUserAuth, OrderController.getSingleOrder)
+router.get('/order/myOrder',CheckUserAuth, OrderController.myOrder)
+router.get('/order/getAllOrders',CheckUserAuth, OrderController.getAllOrders)
+router.get('/order/deleteOrder/:id', CheckUserAuth,OrderController.deleteOrder)
+
 
 module.exports=router
 
