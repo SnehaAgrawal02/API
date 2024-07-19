@@ -14,9 +14,7 @@ class PaymentController{
             }
         })
         console.log(mypayment)
-        res
-        .status(200)
-        .json({ success: true, client_secret: mypayment.client_secret });
+        res.status(200).json({ success: true, client_secret: mypayment.client_secret });
        
     }
 

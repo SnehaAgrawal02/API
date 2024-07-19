@@ -44,7 +44,7 @@ router.delete('/slider', SliderController.delete);
 
 //PaymentController
 router.post('/payment/process', PaymentController.processPayment)
-router.get('/stripepiKey', PaymentController.sendStripeApiKey)
+router.get('/stripeapiKey', PaymentController.sendStripeApiKey)
 
 module.exports=router
 
